@@ -1,5 +1,5 @@
 import slackBolt from "@slack/bolt";
-import { VoltAgent, Agent, createTool } from "@voltagent/core";
+import { Agent } from "@voltagent/core";
 import { GoogleGenAIProvider } from "@voltagent/google-ai";
 import { weatherTool } from "./tools/weather.js";
 import { summaryTool, urlSummarizerTool } from "./tools/summary.js";
@@ -73,6 +73,9 @@ app.event("reaction_added", async ({ event, client }) => {
 // アプリケーション起動
 (async () => {
   // Slack アプリを起動
-  await app.start(process.env.PORT || 3000);
+  await app.start({
+    port: Number(process.env.PORT) || 3000,
+    host: "0.0.0.0",
+  });
   app.logger.info("⚡️ Bolt app is running!");
 })();
