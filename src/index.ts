@@ -74,8 +74,8 @@ app.event("reaction_added", async ({ event, client }) => {
 (async () => {
   // Slack アプリを起動
   await app.start({
-    port: Number(process.env.PORT) || 3000,
+    port: Number(process.env.PORT),
     host: "0.0.0.0",
   });
-  app.logger.info("⚡️ Bolt app is running!");
+  app.logger.info(`⚡️ Bolt app is running! on port ${process.env.PORT}`);
 })();
