@@ -73,6 +73,36 @@ app.event("reaction_added", async ({ event, client }) => {
   });
 });
 
+// app_mention イベントリスナー（メンション時のオウム返し機能）
+app.event("app_mention", async ({ event, client, say }) => {
+  try {
+    // メッセージからボットのメンションを除去
+    // <@UXXXXXX> 形式のメンションを削除
+    const cleanedText = event.text.replace(/<@[A-Z0-9]+>/g, "").trim();
+    
+    // 空のメッセージの場合はデフォルトメッセージを返す
+    const replyText = cleanedText || "メンションありがとうございます！";
+    
+    // スレッドで返信（元のメッセージがスレッド内の場合はそのスレッドに、そうでなければ新しいスレッドを開始）
+    await say({
+      text: replyText,
+      thread_ts: event.thread_ts || event.ts,
+    });
+  } catch (error) {
+    console.error("app_mention イベントの処理中にエラーが発生しました:", error);
+    // エラーが発生した場合でも、ユーザーに通知
+    try {
+      await client.chat.postMessage({
+        channel: event.channel,
+        text: "申し訳ありません。メッセージの処理中にエラーが発生しました。",
+        thread_ts: event.thread_ts || event.ts,
+      });
+    } catch (postError) {
+      console.error("エラーメッセージの送信に失敗しました:", postError);
+    }
+  }
+});
+
 // アプリケーション起動
 (async () => {
   // Slack アプリを起動
