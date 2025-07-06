@@ -1,0 +1,14 @@
+name: Health Check
+
+on:
+  schedule:
+    - cron: '*/13 * * * *'
+  workflow_dispatch:
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send health check request
+        run: |
+          curl -f ${{ secrets.HEALTH_CHECK_URL }} || exit 1
